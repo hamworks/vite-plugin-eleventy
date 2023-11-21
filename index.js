@@ -136,8 +136,11 @@ const eleventyPlugin = (opts = {}) => {
       // Setup Vite dev server middlware to respond with virtual 11ty output
       server.middlewares.use(async (req, res, next) => {
         // Need to grab the pathname, not the request url, to match against 11ty output
-        const { pathname } = req._parsedUrl;
-        const url = pathname.endsWith('/') ? pathname : `${pathname}/`;
+        let { pathname } = req._parsedUrl;
+        if (!pathname.endsWith('.html')) {
+          pathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
+        }
+        const url = pathname;
 
         // Find the file if it exists!
         const output = files.find((r) => r.url === url);
