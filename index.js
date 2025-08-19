@@ -137,7 +137,11 @@ const eleventyPlugin = (opts = {}) => {
       server.middlewares.use(async (req, res, next) => {
         // Need to grab the pathname, not the request url, to match against 11ty output
         let { pathname } = req._parsedUrl;
-        if (!pathname.endsWith('.html')) {
+
+        // /path/index.html を /path/ に正規化
+        if (pathname.endsWith('/index.html')) {
+          pathname = pathname.replace('/index.html', '/');
+        } else if (!pathname.endsWith('.html')) {
           pathname = pathname.endsWith('/') ? pathname : `${pathname}/`;
         }
         const url = pathname;
